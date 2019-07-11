@@ -9,7 +9,7 @@ module.exports = {
 
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyPlugin(['service-worker.js']),
+    new CopyPlugin(['service-worker.js', 'assets']),
     new HtmlWebpackPlugin({
         template: './index.ejs'
     }),
