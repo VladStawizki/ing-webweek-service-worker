@@ -12,6 +12,22 @@ const PRECACHE_URLS = [
 
 let clientImageWidth = 300;
 
+const imageQuality = (networkType) => {
+  if (networkType === '3g') {
+    return 60;
+  }
+
+  if (networkType === '2g') {
+    return 40;
+  }
+
+  if (networkType === 'slow-2g') {
+    return 20;
+  }
+
+  return 80;
+}
+
 self.addEventListener('install', event => {
   console.log('The service worker is being installed.');
   event.waitUntil(
@@ -41,11 +57,16 @@ self.addEventListener('fetch', event => {
       event.respondWith(caches.match('assets/kitty.jpeg'));
 
     } else {
+      const quality = imageQuality(navigator.connection.effectiveType);
+
       event.respondWith(
-        fetch(event.request.url.replace(/w=\d+/, `w=${clientImageWidth}`).replace(/h=\d+/, `h=${clientImageWidth}`))
+        fetch(
+          event.request.url
+            .replace(/w=\d+/, `w=${clientImageWidth}`)
+            .replace(/h=\d+/, `h=${clientImageWidth}`)
+            .replace(/q=\d+/, `q=${quality}`)
+          )
       )
-      // TODO: Size
-      // TODO quality
     }
   }
 });
