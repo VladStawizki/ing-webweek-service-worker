@@ -1,4 +1,4 @@
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in window) {
   navigator.serviceWorker.register('service-worker.js');
 
   navigator.serviceWorker.ready
@@ -11,4 +11,8 @@ if ('serviceWorker' in navigator) {
       });
     }
   });
-}
+} else {
+  document.querySelectorAll('img[data-src]').forEach((image) => {
+    image.setAttribute('src', image.getAttribute('data-src'));
+  });
+}  

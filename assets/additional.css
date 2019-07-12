@@ -1,0 +1,9 @@
+.mdc-drawer-app-content {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.mdc-image-list__image {
+	background-color: grey;
+	height: 300px;
+}
