@@ -71,7 +71,7 @@ self.addEventListener('fetch', event => {
   }
 });
 
-self.addEventListener("message", (evt) => {
+self.addEventListener('message', (evt) => {
   const client = evt.source;
   clientImageWidth = evt.data;
 });

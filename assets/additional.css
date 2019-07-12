@@ -7,3 +7,21 @@
 	background-color: grey;
 	height: 300px;
 }
+
+.my-masonry {
+	column-count: 2;
+}
+
+@media (min-width: 780px) {
+	.my-masonry {
+		column-count: 3;
+	}
+	
+}
+
+@media (min-width: 1200px) {
+	.my-masonry {
+		column-count: 5;
+	}
+	
+}

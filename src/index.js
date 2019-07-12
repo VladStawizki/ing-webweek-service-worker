@@ -1,12 +1,19 @@
-let imageWidth =  Math.round(window.innerWidth / 3);
+let reg = null;
 
-const onResize = (ev) => {
-  const width = ev.currentTarget.innerWidth;
+const item = document.querySelector('.mdc-image-list__item');
 
-  imageWidth = Math.round(width / 3);
-  console.log(imageWidth);
+const onResize = (e) => {
+  if (e.matches) {
+    const item = document.querySelector('.mdc-image-list__item');
+    const imageWidth = item.offsetWidth;
+    if (reg && reg.active) {
+      reg.active.postMessage(imageWidth);
+    }
+  }
 }
 
+const mql = window.matchMedia('(min-width: 780px)');
+mql.addListener(onResize);
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js');
@@ -14,10 +21,8 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.ready
   .then( (registration) => {
     if (registration.active) {
-
-      window.onresize = onResize;
-
-      registration.active.postMessage(imageWidth);
+      reg = registration;
+      registration.active.postMessage(item.offsetWidth);
 
       // Cheap image lazy loading
       document.querySelectorAll('img[data-src]').forEach((image) => {
