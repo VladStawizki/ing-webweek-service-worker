@@ -8,6 +8,7 @@ const PRECACHE_URLS = [
   "main.js",
   "assets/kitty.jpeg",
   "assets/style.css",
+  "assets/additional.css",
 ];
 
 let clientImageWidth = 300;
