@@ -9,12 +9,12 @@
 }
 
 .my-masonry {
-	column-count: 2;
+	column-count: 1;
 }
 
 @media (min-width: 780px) {
 	.my-masonry {
-		column-count: 3;
+		column-count: 2;
 	}
 	
 }

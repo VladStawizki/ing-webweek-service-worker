@@ -58,8 +58,9 @@ self.addEventListener('fetch', event => {
       event.respondWith(caches.match('assets/kitty.jpeg'));
 
     } else {
+      console.log('request', event.request);
       const quality = imageQuality(navigator.connection.effectiveType);
-
+      console.log('clientImageWidth', clientImageWidth)
       event.respondWith(
         fetch(
           event.request.url
@@ -73,6 +74,6 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('message', (evt) => {
-  const client = evt.source;
+  console.log('data', evt.data)
   clientImageWidth = evt.data;
 });

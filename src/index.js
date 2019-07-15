@@ -1,44 +1,78 @@
-let reg = null;
-const images = document.querySelectorAll('img[data-src]');
-const item = document.querySelector('.mdc-image-list__item');
-
-const reloadImages = () => {
-  images.forEach((image) => {
-    image.setAttribute('src', `${image.getAttribute('src')}&t=${Date.now()}`);
-  });
+const dimetions = {
+  smartphone: 731,
+  tablet: 368,
+  desktop: 218
 }
 
-const onResize = (e) => {
+const images = document.querySelectorAll('img[data-src]');
+
+const reloadImages = () => {
+	images.forEach(image => {
+		image.setAttribute('src', `${image.getAttribute('src')}&t=${Date.now()}`);
+	});
+};
+
+const cbSmartphone = e => {
   if (e.matches) {
-    const item = document.querySelector('.mdc-image-list__item');
-    const imageWidth = item.offsetWidth;
-    if (reg && reg.active) {
-      navigator.serviceWorker.postMessage(imageWidth);
-      reloadImages();
-    }
+    navigator.serviceWorker.ready.then(registration => {
+			if (registration.active) {
+        console.log('send-new-image-width', dimetions.smartphone);
+				registration.active.postMessage(dimetions.smartphone);
+				reloadImages();
+			}
+		});
   }
 }
 
-const mql = window.matchMedia('(min-width: 780px)');
-mql.addListener(onResize);
+const cbTablet = e => {
+  if (e.matches) {
+    navigator.serviceWorker.ready.then(registration => {
+			if (registration.active) {
+        console.log('send-new-image-width', dimetions.tablet);
+				registration.active.postMessage(dimetions.tablet);
+				reloadImages();
+			}
+		});
+  }
+}
+
+const cbDesktop = e => {
+  if (e.matches) {
+    navigator.serviceWorker.ready.then(registration => {
+			if (registration.active) {
+        console.log('send-new-image-width', dimetions.desktop);
+				registration.active.postMessage(dimetions.desktop);
+				reloadImages();
+			}
+		});
+  }
+}
+
+const mqSmartphone = window.matchMedia('(min-width: 0px) and (max-width: 779px) ');
+mqSmartphone.addListener(cbSmartphone);
+
+const mqTablet = window.matchMedia('(min-width: 780px) and (max-width: 1199px) ');
+mqTablet.addListener(cbTablet);
+
+const mqDesktop = window.matchMedia('(min-width: 1200px)');
+mqDesktop.addListener(cbDesktop);
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+	navigator.serviceWorker.register('service-worker.js');
 
-  navigator.serviceWorker.ready
-  .then((registration) => {
-    if (registration.active) {
-      reg = registration;
-      registration.active.postMessage(item.offsetWidth);
+	navigator.serviceWorker.ready.then(registration => {
+		if (registration.active) {
+      console.log('imageWidth', dimetions.smartphone)
+			registration.active.postMessage(dimetions.smartphone);
 
-      // Cheap image lazy loading
-      images.forEach((image) => {
-        image.setAttribute('src', image.getAttribute('data-src'));
-      });
-    }
-  });
+			// Cheap image lazy loading
+			images.forEach(image => {
+				image.setAttribute('src', image.getAttribute('data-src'));
+			});
+		}
+	});
 } else {
-  images.forEach((image) => {
-    image.setAttribute('src', image.getAttribute('data-src'));
-  });
-}  
+	images.forEach(image => {
+		image.setAttribute('src', image.getAttribute('data-src'));
+	});
+}
