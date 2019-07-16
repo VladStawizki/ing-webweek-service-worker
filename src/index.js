@@ -1,14 +1,16 @@
 const dimetions = {
   smartphone: 731,
-  tablet: 368,
+  tablet: 560,
   desktop: 218
 }
+
+let initialMq = 0;
 
 const images = document.querySelectorAll('img[data-src]');
 
 const reloadImages = () => {
 	images.forEach(image => {
-		image.setAttribute('src', `${image.getAttribute('src')}&t=${Date.now()}`);
+		image.setAttribute('src', `${image.getAttribute('src')}`);
 	});
 };
 
@@ -18,7 +20,6 @@ const cbSmartphone = e => {
 			if (registration.active) {
         console.log('send-new-image-width', dimetions.smartphone);
 				registration.active.postMessage(dimetions.smartphone);
-				reloadImages();
 			}
 		});
   }
@@ -30,7 +31,6 @@ const cbTablet = e => {
 			if (registration.active) {
         console.log('send-new-image-width', dimetions.tablet);
 				registration.active.postMessage(dimetions.tablet);
-				reloadImages();
 			}
 		});
   }
@@ -42,19 +42,27 @@ const cbDesktop = e => {
 			if (registration.active) {
         console.log('send-new-image-width', dimetions.desktop);
 				registration.active.postMessage(dimetions.desktop);
-				reloadImages();
 			}
 		});
   }
 }
 
 const mqSmartphone = window.matchMedia('(min-width: 0px) and (max-width: 779px) ');
+if(mqSmartphone.matches) {
+	initialMq = dimetions.smartphone;
+};
 mqSmartphone.addListener(cbSmartphone);
 
 const mqTablet = window.matchMedia('(min-width: 780px) and (max-width: 1199px) ');
+if(mqTablet.matches) {
+	initialMq = dimetions.tablet;
+};
 mqTablet.addListener(cbTablet);
 
 const mqDesktop = window.matchMedia('(min-width: 1200px)');
+if(mqDesktop.matches) {
+	initialMq = dimetions.desktop;
+};
 mqDesktop.addListener(cbDesktop);
 
 if ('serviceWorker' in navigator) {
@@ -62,8 +70,7 @@ if ('serviceWorker' in navigator) {
 
 	navigator.serviceWorker.ready.then(registration => {
 		if (registration.active) {
-      console.log('imageWidth', dimetions.smartphone)
-			registration.active.postMessage(dimetions.smartphone);
+			registration.active.postMessage(initialMq);
 
 			// Cheap image lazy loading
 			images.forEach(image => {
@@ -71,6 +78,12 @@ if ('serviceWorker' in navigator) {
 			});
 		}
 	});
+
+	navigator.serviceWorker.addEventListener('message', (event) => {
+		console.log('Client Received Message: ' + event.data);
+		reloadImages();
+	});
+
 } else {
 	images.forEach(image => {
 		image.setAttribute('src', image.getAttribute('data-src'));
