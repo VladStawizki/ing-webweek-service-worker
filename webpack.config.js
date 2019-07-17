@@ -12,6 +12,7 @@ module.exports = {
   devServer: {
     hot: false,
     inline: false,
+    port: 8082
   },
 
   plugins: [
