@@ -18,16 +18,13 @@ const imageQuality = navigator => {
 	if (navigator.connection) {
 		const networkType = navigator.connection.effectiveType;
 
-		if (networkType === '3g') {
-			return 60;
-		}
-
-		if (networkType === '2g') {
-			return 40;
-		}
-
-		if (networkType === 'slow-2g') {
-			return 20;
+		switch(networkType) {
+			case '3g':
+				return 60;
+			case '2g':
+				return 40;
+			case 'slow-2g':
+				return 20;
 		}
 	}
 
