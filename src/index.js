@@ -8,14 +8,10 @@ let initialMq = 0;
 
 const images = document.querySelectorAll('img[data-src]');
 
-// Cheap image lazy loading
-images.forEach(image => {
-	image.setAttribute('src', image.getAttribute('data-src'));
-});
-
-const reloadImages = () => {
+const loadImages = () => {
+	// Cheap image lazy loading
 	images.forEach(image => {
-		image.setAttribute('src', `${image.getAttribute('src')}`);
+		image.setAttribute('src', image.getAttribute('data-src'));
 	});
 };
 
@@ -76,15 +72,15 @@ if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.ready.then(registration => {
 		if (registration.active) {
 			registration.active.postMessage(initialMq);
+
+			loadImages();
 		}
 	});
 
 	navigator.serviceWorker.addEventListener('message', event => {
 		console.log('Client Received Message: ' + event.data);
-		reloadImages();
+		loadImages();
 	});
 } else {
-	images.forEach(image => {
-		image.setAttribute('src', image.getAttribute('data-src'));
-	});
+	loadImages();
 }
