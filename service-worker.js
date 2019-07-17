@@ -5,6 +5,8 @@ const RUNTIME = 'runtime';
 const PRECACHE_URLS = [
 	'./', // Alias for index.html
 	'main.js',
+	'manifest.json',
+	'icon_512x512.png',
 	'assets/kitty.jpeg',
 	'assets/style.css',
 	'assets/additional.css',
@@ -49,6 +51,10 @@ self.addEventListener('fetch', event => {
 		);
 	}
 
+	if (event.request.url.match(/icon_512x512/)) {
+		return;
+	}
+
 	if (event.request.destination === 'image') {
 		if (!navigator.onLine) {
 			event.respondWith(caches.match('assets/kitty.jpeg'));
@@ -59,13 +65,13 @@ self.addEventListener('fetch', event => {
 				.replace(/w=\d+/, `w=${clientImageWidth}`)
 				.replace(/h=\d+/, `h=${clientImageWidth}`)
 				.replace(/q=\d+/, `q=${quality}`);
-			// console.log(newRequestUrl);
+			console.log(`fetching ${newRequestUrl}`);
 
 			event.respondWith(fetch(newRequestUrl));
+				caches
+					.open(RUNTIME)
+					.then(cache => cache.add(newRequestUrl));
 
-			caches
-				.open(PRECACHE)
-        .then(cache => cache.add(newRequestUrl));
 		}
 	}
 });
