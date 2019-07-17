@@ -23,9 +23,9 @@ module.exports = {
     }),
     new WebpackPwaManifest({
       name: 'Hello Webweek',
-      short_name: 'MyPWW',
+      short_name: 'MyPWW1',
       fingerprints: false,
-      description: 'My awesome Progressive Web App!',
+      description: 'Hello WebWeek Step 1',
       background_color: '#ffffff',
       icons: [
         {
