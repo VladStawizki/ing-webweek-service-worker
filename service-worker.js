@@ -14,17 +14,21 @@ const PRECACHE_URLS = [
 
 let clientImageWidth = 300;
 
-const imageQuality = networkType => {
-	if (networkType === '3g') {
-		return 60;
-	}
+const imageQuality = navigator => {
+	if (navigator.connection) {
+		const networkType = navigator.connection.effectiveType;
 
-	if (networkType === '2g') {
-		return 40;
-	}
+		if (networkType === '3g') {
+			return 60;
+		}
 
-	if (networkType === 'slow-2g') {
-		return 20;
+		if (networkType === '2g') {
+			return 40;
+		}
+
+		if (networkType === 'slow-2g') {
+			return 20;
+		}
 	}
 
 	return 80;
@@ -59,7 +63,7 @@ self.addEventListener('fetch', event => {
 		if (!navigator.onLine) {
 			event.respondWith(caches.match('assets/kitty.jpeg'));
 		} else {
-			const quality = imageQuality(navigator.connection.effectiveType);
+			const quality = imageQuality(navigator);
 			console.log('clientImageWidth', clientImageWidth);
 			const newRequestUrl = event.request.url
 				.replace(/w=\d+/, `w=${clientImageWidth}`)
