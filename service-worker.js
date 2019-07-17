@@ -12,27 +12,6 @@ const PRECACHE_URLS = [
 	'assets/additional.css',
 ];
 
-let clientImageWidth = 300;
-
-const imageQuality = navigator => {
-	if (navigator.connection) {
-		const networkType = navigator.connection.effectiveType;
-
-		if (networkType === '3g') {
-			return 60;
-		}
-
-		if (networkType === '2g') {
-			return 40;
-		}
-
-		if (networkType === 'slow-2g') {
-			return 20;
-		}
-	}
-
-	return 80;
-};
 
 self.addEventListener('install', event => {
 	console.log('The service worker is being installed.');
@@ -62,26 +41,6 @@ self.addEventListener('fetch', event => {
 	if (event.request.destination === 'image') {
 		if (!navigator.onLine) {
 			event.respondWith(caches.match('assets/kitty.jpeg'));
-		} else {
-			const quality = imageQuality(navigator);
-			console.log('clientImageWidth', clientImageWidth);
-			const newRequestUrl = event.request.url
-				.replace(/w=\d+/, `w=${clientImageWidth}`)
-				.replace(/h=\d+/, `h=${clientImageWidth}`)
-				.replace(/q=\d+/, `q=${quality}`);
-			console.log(`fetching ${newRequestUrl}`);
-
-			event.respondWith(fetch(newRequestUrl));
-				caches
-					.open(RUNTIME)
-					.then(cache => cache.add(newRequestUrl));
-
 		}
 	}
-});
-
-self.addEventListener('message', evt => {
-	const client = evt.source;
-	client.postMessage(evt.data);
-	clientImageWidth = evt.data;
 });
